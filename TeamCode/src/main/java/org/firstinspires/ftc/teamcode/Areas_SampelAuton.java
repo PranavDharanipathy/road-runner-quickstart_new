@@ -23,6 +23,7 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -37,7 +38,8 @@ import java.util.concurrent.Future;
 
 import kotlin.jvm.internal.TypeParameterReference;
 
-@Autonomous(name = "Areas_Feb_22_SampleAuton", group = "Areas")
+@Disabled
+@Autonomous(name = "Areas_Feb_22_FOURSampleAuton", group = "Areas")
 public class Areas_SampelAuton extends LinearOpMode{
     private Servo claw_servo;
     private Servo claw_pivot_servo;

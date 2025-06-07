@@ -34,12 +34,12 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
 
     private final static int SLIDES_UP_POSITION = 815;
     private final static int SLIDES_DOWN_POSITION = -38;
-    private static int SLIDES_SCORE_SPEC_POSITION = 375;
-    private final static int SLIDES_PICK_SPEC_POSITION = 200;
+    private static int SLIDES_SCORE_SPEC_POSITION = 315;
+    private final static int SLIDES_PICK_SPEC_POSITION = 220;
 
-    //                                             #1    #2  #3  #4  #5
-    private final static double[] CYCLE_FORWARD = {13.5, 14, 14, 15, 14.5};
-    private final static double[] CYCLE_BACKWARD = {-23, -23, -23.5, -23.5, -24};
+    //                                             #1  #2  #3  #4  #5
+    private final static double[] CYCLE_FORWARD = {14, 14, 14, 16, 17};
+    private final static double[] CYCLE_BACKWARD = {-22.5, -23, -23.5, -23.5, -24};
 
     public void slidesToPose(int targetPosition) {
         left_arm_motor.setTargetPosition(targetPosition);
@@ -84,13 +84,15 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
             slidesToPose(SLIDES_SCORE_SPEC_POSITION-5);
             sleep(200);
             claw_pivot_servo.setPosition(1);
+            sleep(390);
             left_arm.setPosition(0.3);
             right_arm.setPosition(0.3);
-            sleep(25);
-            left_arm.setPosition(0.1335);
-            right_arm.setPosition(0.1335);
+            sleep(10);
+            left_arm.setPosition(0.125);
+            right_arm.setPosition(0.125);
+            sleep(400);
             claw_pivot_servo.setPosition(0.775);
-            sleep(1700);
+            sleep(775);
             claw_servo.setPosition(0.1875);
             left_arm.setPosition(0.82);
             right_arm.setPosition(0.82);
@@ -98,19 +100,21 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
             claw_pivot_servo.setPosition(0.87);
 
             ///2nd cycle
-            sleep(1900);
+            sleep(2050);
             claw_pivot_servo.setPosition(0.87);
             claw_servo.setPosition(0.35);
-            slidesToPose(SLIDES_SCORE_SPEC_POSITION);
+            slidesToPose(SLIDES_SCORE_SPEC_POSITION+5);
             sleep(200);
             claw_pivot_servo.setPosition(1);
+            sleep(340);
             left_arm.setPosition(0.3);
             right_arm.setPosition(0.3);
-            sleep(25);
+            sleep(10);
             left_arm.setPosition(0.125);
             right_arm.setPosition(0.125);
+            sleep(400);
             claw_pivot_servo.setPosition(0.775);
-            sleep(1900);
+            sleep(1000);
             claw_servo.setPosition(0.1875);
             left_arm.setPosition(0.82);
             right_arm.setPosition(0.82);
@@ -118,19 +122,21 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
             claw_pivot_servo.setPosition(0.87);
 
             ///3rd cycle
-            sleep(1900);
+            sleep(2025);
             claw_pivot_servo.setPosition(0.87);
             claw_servo.setPosition(0.35);
             slidesToPose(SLIDES_SCORE_SPEC_POSITION);
-            sleep(200);
+            sleep(150);
             claw_pivot_servo.setPosition(1);
+            sleep(515);
             left_arm.setPosition(0.3);
             right_arm.setPosition(0.3);
-            sleep(25);
+            sleep(10);
             left_arm.setPosition(0.125);
             right_arm.setPosition(0.125);
+            sleep(400);
             claw_pivot_servo.setPosition(0.775);
-            sleep(1900);
+            sleep(1000);
             claw_servo.setPosition(0.1875);
             left_arm.setPosition(0.82);
             right_arm.setPosition(0.82);
@@ -138,19 +144,21 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
             claw_pivot_servo.setPosition(0.87);
 
             ///4th cycle
-            sleep(1830);
+            sleep(1930);
             claw_pivot_servo.setPosition(0.87);
             claw_servo.setPosition(0.35);
-            slidesToPose(SLIDES_SCORE_SPEC_POSITION);
-            sleep(200);
+            slidesToPose(SLIDES_SCORE_SPEC_POSITION+2);
+            sleep(150);
             claw_pivot_servo.setPosition(1);
+            sleep(615);
             left_arm.setPosition(0.3);
             right_arm.setPosition(0.3);
-            sleep(25);
-            left_arm.setPosition(0.1325);
-            right_arm.setPosition(0.1325);
+            sleep(10);
+            left_arm.setPosition(0.125);
+            right_arm.setPosition(0.125);
+            sleep(400);
             claw_pivot_servo.setPosition(0.775);
-            sleep(1900);
+            sleep(1000);
             claw_servo.setPosition(0.1875);
             left_arm.setPosition(0.82);
             right_arm.setPosition(0.82);
@@ -158,22 +166,24 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
             claw_pivot_servo.setPosition(0.87);
 
             ///5th cycle
-            sleep(1850);
+            sleep(1950);
             claw_pivot_servo.setPosition(0.87);
             claw_servo.setPosition(0.35);
-            slidesToPose(SLIDES_SCORE_SPEC_POSITION + 8);
+            slidesToPose(SLIDES_SCORE_SPEC_POSITION + 2);
             sleep(200);
             claw_pivot_servo.setPosition(1);
+            sleep(500);
             left_arm.setPosition(0.3);
             right_arm.setPosition(0.3);
-            sleep(25);
-            left_arm.setPosition(0.1325);
-            right_arm.setPosition(0.1325);
+            sleep(10);
+            left_arm.setPosition(0.125);
+            right_arm.setPosition(0.125);
+            sleep(300);
             claw_pivot_servo.setPosition(0.775);
-            sleep(1900);
+            sleep(1100);
             claw_servo.setPosition(0.1875);
-            left_arm.setPosition(0.1175);
-            right_arm.setPosition(0.1175);
+            left_arm.setPosition(0.55);
+            right_arm.setPosition(0.55);
             slidesToPose(SLIDES_DOWN_POSITION);
             claw_pivot_servo.setPosition(0.5);
 
@@ -249,17 +259,17 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
 
         sleep(475);
 
-        /**Sample 2**/ giveSampleAndReturn(drive, initialPose,5, Math.toRadians(7), -75, false);
+        /**Sample 2**/ giveSampleAndReturn(drive, initialPose,5, Math.toRadians(11.85), -75, false);
 
         extendoExtend(0.36);
         sleep(575);
-        /**Sample 3**/ giveSampleAndReturnThirdTime(drive, initialPose,0, 107, -80);
+        /**Sample 3**/ giveSampleAndReturnThirdTime(drive, initialPose,0, 105, -72);
 
         drive.localizer.setPose(initialPose);
         Actions.runBlocking(
                 drive.actionBuilder(initialPose)
-                        .setTangent(Math.toRadians(0))
-                        .lineToXConstantHeading(-28, new TranslationalVelConstraint(90), new ProfileAccelConstraint(-50,50))
+                        .setTangent(Math.toRadians(-2.5))
+                        .lineToXConstantHeading(-27, new TranslationalVelConstraint(90), new ProfileAccelConstraint(-50,50))
                         .build()
         );
 
@@ -280,22 +290,25 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
                         .setTangent(Math.toRadians(43))
                         .lineToXConstantHeading(CYCLE_BACKWARD[2], new TranslationalVelConstraint(90), new ProfileAccelConstraint(-50,50))
 
-                        .setTangent(Math.toRadians(43.375))
+                        .setTangent(Math.toRadians(43.4))
                         .lineToXConstantHeading(CYCLE_FORWARD[3], new TranslationalVelConstraint(90), new ProfileAccelConstraint(-50,50))
                         .setTangent(Math.toRadians(43))
                         .lineToXConstantHeading(CYCLE_BACKWARD[3], new TranslationalVelConstraint(90), new ProfileAccelConstraint(-50,50))
 
-                        .setTangent(Math.toRadians(43.375))
+                        .setTangent(Math.toRadians(43.4))
                         .lineToXConstantHeading(CYCLE_FORWARD[4], new TranslationalVelConstraint(90), new ProfileAccelConstraint(-50,50))
                         .setTangent(Math.toRadians(44))
                         .lineToXConstantHeading(CYCLE_BACKWARD[4], new TranslationalVelConstraint(90), new ProfileAccelConstraint(-50,50))
                         .build()
         );
 
-
         try {
             pickSpecs.join();
         } catch (Exception e) {}
+
+        left_arm.setPosition(0.55);
+        right_arm.setPosition(0.55);
+        sleep(200);
     }
 
     public void giveSampleAndReturn(MecanumDrive drive, Pose2d initialPose, double forwardAmt, double angOffset, double ang, boolean extendWait) {
@@ -340,7 +353,7 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
         try {
             sleep(425);
             extendoExtend(0.36);
-            intake.setPower(-0.225);
+            intake.setPower(-0.235);
         } catch (Exception e) {
             Thread.currentThread().interrupt();
         }
@@ -358,7 +371,7 @@ public class Areas_Feb22_SpecimenAuton extends LinearOpMode {
             asynchExtendoExtendForThird.join();
         } catch (Exception e) {}
         intake.setPower(-1);
-        sleep(220);
+        sleep(250);
         intake.setPower(0);
         extendoExtend(0.1325);
         asynchExtendoRetract.start();

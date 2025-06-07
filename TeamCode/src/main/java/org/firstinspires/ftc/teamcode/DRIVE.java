@@ -2,16 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.Servo.Direction.REVERSE;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Config
-@TeleOp(name = "Areas_BLUE_Bot3Driver", group = "Areas") //The one being used
-public class Areas_BLUE_Bot3Driver extends OpMode {
+
+@TeleOp(name = "DRIVE", group = "Areas") //The one being used
+public class DRIVE extends OpMode {
 
     private DcMotor left_front;
     private DcMotor left_back;
@@ -42,9 +41,9 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
     private double joyStickMargin = 0.004;
     private final static int SLIDES_UP_POSITION = 740;
     private final static int SLIDES_DOWN_POSITION = -38;
-    public static int SLIDES_SCORE_SPEC_POSITION = 370;
+    private static int SLIDES_SCORE_SPEC_POSITION = 280;
     private static int prev_slidesScoreSpecPosition;
-    public static int SLIDES_PICK_SPEC_POSITION = 210;
+    private static int SLIDES_PICK_SPEC_POSITION = 200;
     private final static int SLIDES_MINIMUM_THRESHOLD = 10;
     private ElapsedTime scoreSpecimenTimer = new ElapsedTime();
     private ElapsedTime pickSpecimenTimer = new ElapsedTime();
@@ -101,8 +100,6 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
     private static double ARM_AFTER_TRANSFER = 0.11;
 
     private final static double TRANSFER_POSITION = 0.071;
-
-    public static double SHOOT_THROUGH_BOT_CHAMBER_POSITION = 0.275;
 
     @Override
     public void init() {
@@ -208,7 +205,7 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
     public void modes() {
         //set mode
         if (gamepad1.x) {//alliance color
-            wantedColor = OurColorSensor.DetectedColor.BLUE;
+            wantedColor = OurColorSensor.DetectedColor.RED;
             AllowNeutral = false;
         }
         else if(gamepad1.b) {//neutral
@@ -216,7 +213,7 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
             AllowNeutral = false;
         }
         else if(gamepad1.a) {//both
-            wantedColor = OurColorSensor.DetectedColor.BLUE;
+            wantedColor = OurColorSensor.DetectedColor.RED;
             AllowNeutral = true;
         }
 
@@ -520,8 +517,8 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
 
     public void extendoExtend() {
         clawTransfer = true;
-        left_extendo_servo.setPosition(0.34);
-        right_extendo_servo.setPosition(0.34);
+        left_extendo_servo.setPosition(0.3);
+        right_extendo_servo.setPosition(0.3);
         left_intake_chamber_servo.setPosition(0.81325);
         right_intake_chamber_servo.setPosition(0.81325);
         extendoPos = 0;
@@ -530,8 +527,8 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
     }
 
     public void pickFromSubmersible() {
-        left_extendo_servo.setPosition(0.34);
-        right_extendo_servo.setPosition(0.34);
+        left_extendo_servo.setPosition(0.3);
+        right_extendo_servo.setPosition(0.3);
         left_intake_chamber_servo.setPosition(0.425);
         right_intake_chamber_servo.setPosition(0.425);
         extendoPos = 0;
@@ -550,8 +547,8 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
     }
 
     public void shootThroughBot() {
-        left_intake_chamber_servo.setPosition(SHOOT_THROUGH_BOT_CHAMBER_POSITION);
-        right_intake_chamber_servo.setPosition(SHOOT_THROUGH_BOT_CHAMBER_POSITION);
+        left_intake_chamber_servo.setPosition(0.25);
+        right_intake_chamber_servo.setPosition(0.25);
     }
 
     public void slidesToPose(int targetPosition) {
@@ -624,7 +621,7 @@ public class Areas_BLUE_Bot3Driver extends OpMode {
             scoreSpecimenStages++;
         }
         if (scoreSpecimenStages == 6 && scoreSpecimenTimer.milliseconds() >= 715) {
-            claw_pivot_servo.setPosition(0.8175);
+            claw_pivot_servo.setPosition(0.775);
         }
         /*---*/
         //pick spec

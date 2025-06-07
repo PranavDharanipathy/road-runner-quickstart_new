@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.Servo.Direction.REVERSE;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Config
 @TeleOp(name = "Areas_RED_Bot3Driver", group = "Areas") //The one being used
 public class Areas_RED_Bot3Driver extends OpMode {
 
@@ -39,11 +40,12 @@ public class Areas_RED_Bot3Driver extends OpMode {
     private double driveLeftY_debugger;
     private double driveRightX_debugger;
     private double joyStickMargin = 0.004;
-    private final static int SLIDES_UP_POSITION = 825;
+    private final static int SLIDES_UP_POSITION = 740;
     private final static int SLIDES_DOWN_POSITION = -38;
-    private static int SLIDES_SCORE_SPEC_POSITION = 365;
-    private static int SLIDES_PICK_SPEC_POSITION = 200;
-    private final static int SLIDES_MINIMUM_THRESHOLD = 0;
+    public static int SLIDES_SCORE_SPEC_POSITION = 370;
+    private static int prev_slidesScoreSpecPosition;
+    public static int SLIDES_PICK_SPEC_POSITION = 210;
+    private final static int SLIDES_MINIMUM_THRESHOLD = 10;
     private ElapsedTime scoreSpecimenTimer = new ElapsedTime();
     private ElapsedTime pickSpecimenTimer = new ElapsedTime();
     private ElapsedTime pickSpecimenAfterScoringTimer = new ElapsedTime();
@@ -87,12 +89,20 @@ public class Areas_RED_Bot3Driver extends OpMode {
     private ElapsedTime automaticOuttakeTimer = new ElapsedTime();
     private boolean automaticOuttakeStateHolder = false;
     private double extendoPos = 1; //in = 1 | out = 0
-    private double extendoPosSubtractor = 0;
     private boolean CanIntake = true;
     private boolean AllowNeutral = true;
     private boolean clawTransfer = true;
     private ElapsedTime setIntakeModeRumbleTimer = new ElapsedTime();
     private int setIntakeModeRumbleDuration = 150;
+
+    private static double CLAW_OPEN = 0.175;
+    private static double CLAW_CLOSED = 0.35;
+    private static double TRANSFER_PIVOT = 0.568;
+    private static double ARM_AFTER_TRANSFER = 0.11;
+
+    private final static double TRANSFER_POSITION = 0.071;
+
+    public static double SHOOT_THROUGH_BOT_CHAMBER_POSITION = 0.275;
 
     @Override
     public void init() {
@@ -139,19 +149,31 @@ public class Areas_RED_Bot3Driver extends OpMode {
         right_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        ourColorSensor.initialize(hardwareMap);
         left_intake_chamber_servo.setDirection(Servo.Direction.REVERSE);
         right_intake_chamber_servo.setDirection(Servo.Direction.REVERSE);
+
+        ourColorSensor.initialize(hardwareMap);
     }
 
     @Override
     public void start() {
-        left_arm.setPosition(0.1);
-        right_arm.setPosition(0.1);
-        claw_servo.setPosition(0.2);
-        claw_pivot_servo.setPosition(0.535);
-        slidesToPose(SLIDES_DOWN_POSITION);
-        extendoRetract();
+
+        PostAutonomousRobotReset robot = new PostAutonomousRobotReset(
+                claw_servo, claw_pivot_servo,
+                left_arm, right_arm,
+                left_extendo_servo, right_extendo_servo,
+                left_intake_chamber_servo, right_intake_chamber_servo,
+                left_arm_motor, right_arm_motor
+        );
+
+        robot.runFailSafe();
+
+//        left_arm.setPosition(TRANSFER_POSITION);
+//        right_arm.setPosition(TRANSFER_POSITION);
+//        claw_servo.setPosition(0.22);
+//        claw_pivot_servo.setPosition(0.535);
+//        slidesToPose(SLIDES_DOWN_POSITION);
+//        extendoRetract();
 
         scoreSpecimenTimer.reset();
         pickSpecimenTimer.reset();
@@ -220,7 +242,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
             if (gamepad2.right_trigger > 0.1 && CanIntake) {
                 intake.setPower(1); //intake
             } else if (!CanIntake) {
-                automaticOuttakeStateHolder = true; /*outtake*/ ///[[actual outtaking is done in withinLoopProcessing()]]
+                automaticOuttakeStateHolder = true; /*outtake*/ /** [[actual outtaking is done in withinLoopProcessing()]] **/
             } else if (gamepad2.left_trigger > 0.1) {
                 intake.setPower(-1); //outtake
             } else {
@@ -301,6 +323,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
             if (cur_gamepad2x && !prev_gamepad2x) {
                 if (!shootThroughBotToggle) {
                     shootThroughBot();
+                    outtakeSpeed = -0.7;
                 }
                 else {
                     left_intake_chamber_servo.setPosition(0.075);
@@ -396,6 +419,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
         telemetry.addData("Mode", wantedColor);
         telemetry.addData("Both", AllowNeutral);
         telemetry.addData("Detected Color", detectedColor);
+        telemetry.addData("Hue Detected", ourColorSensor.getHue());
         telemetry.addData("Can Intake", CanIntake);
         telemetry.addLine(" ");
         telemetry.addData("Power", intake.getPower());
@@ -433,10 +457,10 @@ public class Areas_RED_Bot3Driver extends OpMode {
         pickSpecimenStages = 0;
         pickSampleStages = 0;
         returnToPickSamplePoseStage = 1;
-        left_arm.setPosition(0.11);
-        right_arm.setPosition(0.11);
-        claw_servo.setPosition(0.2);
-        claw_pivot_servo.setPosition(0.535);
+        left_arm.setPosition(TRANSFER_POSITION);
+        right_arm.setPosition(TRANSFER_POSITION);
+        claw_servo.setPosition(CLAW_OPEN);
+        claw_pivot_servo.setPosition(TRANSFER_PIVOT);
         slidesToPose(SLIDES_DOWN_POSITION);
     }
 
@@ -501,6 +525,8 @@ public class Areas_RED_Bot3Driver extends OpMode {
         left_intake_chamber_servo.setPosition(0.81325);
         right_intake_chamber_servo.setPosition(0.81325);
         extendoPos = 0;
+
+        shootThroughBotToggle = false;
     }
 
     public void pickFromSubmersible() {
@@ -509,6 +535,8 @@ public class Areas_RED_Bot3Driver extends OpMode {
         left_intake_chamber_servo.setPosition(0.425);
         right_intake_chamber_servo.setPosition(0.425);
         extendoPos = 0;
+
+        shootThroughBotToggle = false;
     }
 
     public void extendoRetract() {
@@ -517,11 +545,13 @@ public class Areas_RED_Bot3Driver extends OpMode {
         left_intake_chamber_servo.setPosition(0.075);
         right_intake_chamber_servo.setPosition(0.075);
         extendoPos = 1;
+
+        shootThroughBotToggle = false;
     }
 
     public void shootThroughBot() {
-        left_intake_chamber_servo.setPosition(0.25);
-        right_intake_chamber_servo.setPosition(0.25);
+        left_intake_chamber_servo.setPosition(SHOOT_THROUGH_BOT_CHAMBER_POSITION);
+        right_intake_chamber_servo.setPosition(SHOOT_THROUGH_BOT_CHAMBER_POSITION);
     }
 
     public void slidesToPose(int targetPosition) {
@@ -542,7 +572,10 @@ public class Areas_RED_Bot3Driver extends OpMode {
             right_arm_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         if (left_arm_motor.getTargetPosition() != SLIDES_PICK_SPEC_POSITION && left_arm_motor.getTargetPosition() != SLIDES_DOWN_POSITION && left_arm_motor.getTargetPosition() != SLIDES_UP_POSITION) {
-            slidesToPose(SLIDES_SCORE_SPEC_POSITION);
+            if (SLIDES_SCORE_SPEC_POSITION != prev_slidesScoreSpecPosition) { //to prevent running as much computationally intense actions to make battery life last longer.
+                slidesToPose(SLIDES_SCORE_SPEC_POSITION);
+                prev_slidesScoreSpecPosition = SLIDES_SCORE_SPEC_POSITION;
+            }
         }
         if (extendoPos == 1 && returnToPickSamplePoseStage != 2 && (returnToPickSamplePoseStage == 1 || pickSampleStages > 1 /*stages 2 & 3*/)) {
             if (returnToPickSamplePoseMoveArmOutOfExtendoPath.milliseconds() <= 250) {
@@ -569,51 +602,51 @@ public class Areas_RED_Bot3Driver extends OpMode {
         //score spec
         if (scoreSpecimenStages == 1 && scoreSpecimenTimer.milliseconds() >= 1) {
             claw_pivot_servo.setPosition(0.83);
-            claw_servo.setPosition(0.35);
+            claw_servo.setPosition(CLAW_CLOSED);
             scoreSpecimenStages++;
         }
         if (scoreSpecimenStages == 2 && scoreSpecimenTimer.milliseconds() >= 50) {
             slidesToPose(SLIDES_SCORE_SPEC_POSITION);
             scoreSpecimenStages++;
         }
-        if (scoreSpecimenStages == 3 && scoreSpecimenTimer.milliseconds() >= 300) {
+        if (scoreSpecimenStages == 3 && scoreSpecimenTimer.milliseconds() >= 250) {
             claw_pivot_servo.setPosition(1);
             scoreSpecimenStages++;
         }
-        if (scoreSpecimenStages == 4 && scoreSpecimenTimer.milliseconds() >= 650) {
-            left_arm.setPosition(0.3);
-            right_arm.setPosition(0.3);
+        if (scoreSpecimenStages == 4 && scoreSpecimenTimer.milliseconds() >= 600) {
+            left_arm.setPosition(0.65);
+            right_arm.setPosition(0.65);
             scoreSpecimenStages++;
         }
-        if (scoreSpecimenStages == 5 && scoreSpecimenTimer.milliseconds() >= 750) {
-            claw_pivot_servo.setPosition(0.775);
+        if (scoreSpecimenStages == 5 && scoreSpecimenTimer.milliseconds() >= 700) {
+            left_arm.setPosition(0.1);
+            right_arm.setPosition(0.1);
             scoreSpecimenStages++;
         }
-        if (scoreSpecimenStages == 6 && scoreSpecimenTimer.milliseconds() >= 765) {
-            left_arm.setPosition(0.125);
-            right_arm.setPosition(0.125);
+        if (scoreSpecimenStages == 6 && scoreSpecimenTimer.milliseconds() >= 715) {
+            claw_pivot_servo.setPosition(0.8175);
         }
         /*---*/
         //pick spec
         if (pickSpecimenStages == 1 && pickSpecimenTimer.milliseconds() >= 1) {
-            left_arm.setPosition(0.65);
-            right_arm.setPosition(0.65);
-            claw_pivot_servo.setPosition(0.83); //goes a bit down before releasing to prevent the sample from getting flung out
-            claw_servo.setPosition(0.2);
+            claw_servo.setPosition(CLAW_OPEN);
             pickSpecimenStages++;
         }
-        if (pickSpecimenStages == 2 && pickSpecimenTimer.milliseconds() >= 250) {
+        if (pickSpecimenStages == 2 && pickSpecimenTimer.milliseconds() >= 50) {
             slidesToPose(SLIDES_PICK_SPEC_POSITION);
+            left_arm.setPosition(0.82);
+            right_arm.setPosition(0.82);
             pickSpecimenStages++;
         }
-        if (pickSpecimenStages == 3 && pickSpecimenTimer.milliseconds() >= 600) {
+        if (pickSpecimenStages == 3 && pickSpecimenTimer.milliseconds() >= 250) {
+            claw_pivot_servo.setPosition(0.83);
             left_arm.setPosition(0.82);
             right_arm.setPosition(0.82);
         }
         /*---*/
         //pick spec after scoring
         if (pickSpecimenAfterScoringStages == 1 && pickSpecimenAfterScoringTimer.milliseconds() >= 1) {
-            claw_servo.setPosition(0.2);
+            claw_servo.setPosition(CLAW_OPEN);
             pickSpecimenAfterScoringStages++;
         }
         if (pickSpecimenAfterScoringStages == 2 && pickSpecimenAfterScoringTimer.milliseconds() >= 50) {
@@ -629,47 +662,46 @@ public class Areas_RED_Bot3Driver extends OpMode {
         if (pickSpecimenAfterScoringStages == 4 && pickSpecimenAfterScoringTimer.milliseconds() >= 550) {
             left_arm.setPosition(0.82);
             right_arm.setPosition(0.82);
-            pickSpecimenAfterScoringStages++;
         }
 
         /*---*/
         //score sample
         if (scoreSampleStages == 1 && scoreSampleTimer.milliseconds() >= 1) {
-            claw_pivot_servo.setPosition(0.875);
-            claw_servo.setPosition(0.535);
+            claw_pivot_servo.setPosition(0.92);
+            claw_servo.setPosition(CLAW_CLOSED);
             scoreSampleStages++;
         }
-        if (scoreSampleStages == 2 && scoreSampleTimer.milliseconds() >= 225) {
+        if (scoreSampleStages == 2 && scoreSampleTimer.milliseconds() >= 300) {
             left_arm.setPosition(0.3);
             right_arm.setPosition(0.3);
             scoreSampleStages++;
         }
-        if (scoreSampleStages == 3 && scoreSampleTimer.milliseconds() >= 550) {
+        if (scoreSampleStages == 3 && scoreSampleTimer.milliseconds() >= 625) {
             slidesToPose(SLIDES_UP_POSITION);
             scoreSampleStages++;
         }
-        if (scoreSampleStages == 4 && scoreSampleTimer.milliseconds() >= 1000) {
+        if (scoreSampleStages == 4 && scoreSampleTimer.milliseconds() >= 1075) {
             left_arm.setPosition(0.485);
             right_arm.setPosition(0.485);
             scoreSampleStages++;
         }
-        if (scoreSampleStages == 5 && scoreSampleTimer.milliseconds() >= 1200) {
+        if (scoreSampleStages == 5 && scoreSampleTimer.milliseconds() >= 1275) {
             claw_pivot_servo.setPosition(0.875);
         }
         /*---*/
         //pick sample
         if (pickSampleStages == 1 && pickSampleTimer.milliseconds() >= 1) {
             claw_pivot_servo.setPosition(0.865); //goes a bit down before releasing to prevent the sample from getting flung out
-            claw_servo.setPosition(0.2);
+            claw_servo.setPosition(CLAW_OPEN);
             pickSampleStages++;
         }
         if (pickSampleStages == 2 && pickSampleTimer.milliseconds() >= 300) {
-            left_arm.setPosition(0.0925);
-            right_arm.setPosition(0.0925);
+            left_arm.setPosition(TRANSFER_POSITION);
+            right_arm.setPosition(TRANSFER_POSITION);
             pickSampleStages++;
         }
         if (pickSampleStages == 3 && pickSampleTimer.milliseconds() >= 630) {
-            claw_pivot_servo.setPosition(0.535);
+            claw_pivot_servo.setPosition(TRANSFER_PIVOT);
             slidesToPose(SLIDES_DOWN_POSITION);
             if (pickSampleTimer.milliseconds() >= 1000) {
                 pickSampleStages = 4; // increased at final step to prevent the slides from trying to go down again and again
@@ -677,35 +709,26 @@ public class Areas_RED_Bot3Driver extends OpMode {
         }
         /*---*/
         //transfer sample to claw
-        if (extendoPos == 1) {
-            extendoPosSubtractor = 300;
-        }
-        else {
-            extendoPosSubtractor = 0;
-        }
         if (transferToClawStages == 1) {
             allowIntaking = false;
             allowExtendo = false;
-            claw_pivot_servo.setPosition(0.535);
-            left_arm.setPosition(0.11);
-            right_arm.setPosition(0.11);
-            if (extendoPos == 0) {
-                extendoRetract();
-            }
+            claw_pivot_servo.setPosition(TRANSFER_PIVOT);
+            left_arm.setPosition(TRANSFER_POSITION);
+            right_arm.setPosition(TRANSFER_POSITION);
             transferToClawStages++;
         }
-        if (transferToClawStages == 2 && transferToClawTimer.milliseconds() >= 700) {
-            intake.setPower(-0.875);
+        if (transferToClawStages == 2 && transferToClawTimer.milliseconds() >= 400) {
+            intake.setPower(-0.75);
             transferToClawStages++;
         }
-        if (transferToClawStages == 3 && transferToClawTimer.milliseconds() >= (1300 - extendoPosSubtractor)) {
-            claw_servo.setPosition(0.35);
+        if (transferToClawStages == 3 && transferToClawTimer.milliseconds() >= (700)) {
+            claw_servo.setPosition(CLAW_CLOSED);
             transferToClawStages++;
         }
-        if (transferToClawStages == 4 && transferToClawTimer.milliseconds() >= (1500 - extendoPosSubtractor)) {
+        if (transferToClawStages == 4 && transferToClawTimer.milliseconds() >= (735)) {
             transferToClawStages = 0;
-            left_arm.setPosition(0.165);
-            right_arm.setPosition(0.165);
+            left_arm.setPosition(ARM_AFTER_TRANSFER);
+            right_arm.setPosition(ARM_AFTER_TRANSFER);
         }
         if (transferToClawStages == 0) {
             allowIntaking = true;

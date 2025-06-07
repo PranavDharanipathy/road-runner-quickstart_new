@@ -38,6 +38,13 @@ public class OurColorSensor extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
     }
 
+    public float getHue() {
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+        Color.colorToHSV(colors.toColor(), hsvValues);
+
+        return hsvValues[0];
+    }
+
     public DetectedColor getColor() {
         // Detect the color
         detectedColor = detectColor();
@@ -79,14 +86,14 @@ public class OurColorSensor extends LinearOpMode {
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);
 
-        // Determine detected color based on hue
-        if (hsvValues[0] >= 190 && hsvValues[0] <= 240) {
+        /// Determine detected color based on hue
+        if (hsvValues[0] >= 190 && hsvValues[0] <= 260) {
             color = "BLUE"; // Set color first
             return DetectedColor.BLUE; // Then return
         } else if (hsvValues[0] >= 50 && hsvValues[0] <= 90) {
             color = "YELLOW"; // Set color first
             return DetectedColor.YELLOW; // Then return
-        } else if (hsvValues[0] >= 0 && hsvValues[0] <= 30) {
+        } else if ((hsvValues[0] >= 0 && hsvValues[0] <= 45) || (hsvValues[0] >= 330)) {
             color = "RED"; // Set color first
             return DetectedColor.RED; // Then return
         } else {
