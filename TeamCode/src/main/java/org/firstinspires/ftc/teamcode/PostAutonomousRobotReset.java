@@ -22,25 +22,14 @@ public class PostAutonomousRobotReset {
         this.rtSlides = rtSlides;
     }
 
-    private void armFix(Servo lA, Servo rA) {
-//        lA.setPosition(0.0);
-//        rA.setPosition(0.0);
-//        sleep(1);
-//       for(double i = 0.01; i >= 0.071;) {
-//            lA.setPosition(i);
-//            rA.setPosition(i);
-//            i = i + 0.01;
-//        }
-        lA.setPosition(0.071);
-        rA.setPosition(0.071);
-    }
 
     public void runFailSafe() {
 
         ///arm moved out of the way
         claw.setPosition(0.2);
         pivot.setPosition(0.568);
-        armFix(lfArm, rtArm);
+        lfArm.setPosition(0.071);
+        rtArm.setPosition(0.071);
 
         sleep(300);
 

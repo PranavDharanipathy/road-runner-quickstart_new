@@ -59,7 +59,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
     private int scoreSampleStages = 0;
     private int pickSampleStages = 0;
     private int transferToClawStages = 0;
-    private int returnToPickSamplePoseStage = 0;
+    private int returnToPickSamplePoseStages = 0;
     private boolean allowIntaking = true;
     private boolean allowExtendo = true;
     private boolean prev_gamepad1lb = false;
@@ -442,21 +442,23 @@ public class Areas_RED_Bot3Driver extends OpMode {
 
     public void pickSamplePose() {
         pickSampleTimer.reset();
+        transferToClawStages = 0;
         scoreSampleStages = 0;
         pickSpecimenAfterScoringStages = 0;
         scoreSpecimenStages = 0;
         pickSpecimenStages = 0;
-        returnToPickSamplePoseStage = 0;
+        returnToPickSamplePoseStages = 0;
         pickSampleStages = 1;
     }
 
     public void returnToPickSamplePose() {
+        transferToClawStages = 0;
         scoreSampleStages = 0;
         pickSpecimenAfterScoringStages = 0;
         scoreSpecimenStages = 0;
         pickSpecimenStages = 0;
         pickSampleStages = 0;
-        returnToPickSamplePoseStage = 1;
+        returnToPickSamplePoseStages = 1;
         left_arm.setPosition(TRANSFER_POSITION);
         right_arm.setPosition(TRANSFER_POSITION);
         claw_servo.setPosition(CLAW_OPEN);
@@ -471,7 +473,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
         scoreSpecimenStages = 0;
         pickSpecimenStages = 0;
         pickSampleStages = 0;
-        returnToPickSamplePoseStage = 0;
+        returnToPickSamplePoseStages = 0;
         transferToClawStages = 1;
     }
 
@@ -482,7 +484,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
         pickSpecimenAfterScoringStages = 0;
         scoreSpecimenStages = 0;
         transferToClawStages = 0;
-        returnToPickSamplePoseStage = 0;
+        returnToPickSamplePoseStages = 0;
         pickSpecimenStages = 1;
     }
 
@@ -493,7 +495,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
         scoreSpecimenStages = 0;
         pickSpecimenStages = 0;
         transferToClawStages = 0;
-        returnToPickSamplePoseStage = 0;
+        returnToPickSamplePoseStages = 0;
         pickSpecimenAfterScoringStages = 1;
     }
 
@@ -504,17 +506,18 @@ public class Areas_RED_Bot3Driver extends OpMode {
         pickSpecimenAfterScoringStages = 0;
         pickSpecimenStages = 0;
         transferToClawStages = 0;
-        returnToPickSamplePoseStage = 0;
+        returnToPickSamplePoseStages = 0;
         scoreSpecimenStages = 1;
     }
 
     public void scoreSamplePose() {
         scoreSampleTimer.reset();
+        transferToClawStages = 0;
         pickSampleStages = 0;
         pickSpecimenAfterScoringStages = 0;
         pickSpecimenStages = 0;
         scoreSpecimenStages = 0;
-        returnToPickSamplePoseStage = 0;
+        returnToPickSamplePoseStages = 0;
         scoreSampleStages = 1;
     }
 
@@ -577,7 +580,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
                 prev_slidesScoreSpecPosition = SLIDES_SCORE_SPEC_POSITION;
             }
         }
-        if (extendoPos == 1 && returnToPickSamplePoseStage != 2 && (returnToPickSamplePoseStage == 1 || pickSampleStages > 1 /*stages 2 & 3*/)) {
+        if (extendoPos == 1 && returnToPickSamplePoseStages != 2 && (returnToPickSamplePoseStages == 1 || pickSampleStages > 1 /*stages 2 & 3*/)) {
             if (returnToPickSamplePoseMoveArmOutOfExtendoPath.milliseconds() <= 250) {
                 left_arm.setPosition(0.15);
                 right_arm.setPosition(0.15);
@@ -585,7 +588,7 @@ public class Areas_RED_Bot3Driver extends OpMode {
             else {
                 left_arm.setPosition(0.1168);
                 right_arm.setPosition(0.1168);
-                returnToPickSamplePoseStage = 2;
+                returnToPickSamplePoseStages = 2;
             }
         }
         else returnToPickSamplePoseMoveArmOutOfExtendoPath.reset();
